@@ -1,0 +1,16 @@
+{
+    "name": "LabFrameGanglion",
+    "rootNamespace": "LabFrame.Ganglion",
+    "references": [
+        "GUID:446fbb70571d4224d98108c0517d6b29"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
