@@ -12,17 +12,19 @@ namespace LabFrame.Ganglion
         // Start is called before the first frame update
         void Start()
         {            
-            
+            // GanglionManager.Instance
         }
 
         // Update is called once per frame
         void Update()
         {
+            _text.text = $"<b>Connected: </b>{GanglionManager.Instance.IsConnected}\n";
+            
             var eeg = GanglionManager.Instance.GetEegData();
             var impedance = GanglionManager.Instance.GetImpedanceData();
             if(eeg != null)
             {
-                _text.text = "<b>EEG:</b> \n";
+                _text.text += "<b>EEG:</b> \n";
                 foreach (var value in eeg.EEGValues)
                 {
                     _text.text += value.ToString("0.00") + "\n";

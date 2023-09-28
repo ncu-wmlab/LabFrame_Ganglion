@@ -26,6 +26,7 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
         if (_pluginInstance == null)
             LabTools.LogError("Error while creating Ganglion PluginInstance object");
         _pluginInstance.CallStatic("receiveUnityActivity", AndroidHelper.CurrentActivity);
+
         _checkConnectedCoroutine = StartCoroutine(CheckConnected());
     }
 
@@ -38,10 +39,11 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
         {
             _pluginInstance.Call("Disconnect");
             // _pluginInstance.Call("Close");
+            LabTools.Log("[Ganglion] Disconnected");
         }
         catch
         {
-            Debug.LogError("Disconnect failed");
+            LabTools.LogError("[Ganglion] Disconnect failed");
         }
 
         _pluginInstance.Dispose();
@@ -51,36 +53,21 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     
     #endregion
 
-
-    /// <summary>
-    /// 初始化套件
-    /// </summary>
-    public void IntializePlugin()
-    {    
-        StartCoroutine(GanglionConnnect());        
-    }
-
-    IEnumerator GanglionConnnect()
-    {
-        while (!IsConnected)
-        {
-            // Debug.Log("[Ganglion] Connecting... ");
-            _pluginInstance.Call("Init");
-            yield return new WaitForSeconds(.8763f);
-        }
-        LabTools.Log("[Ganglion] Connected");
-        IsConnected = true;
-    }
     
     /// <summary>
-    /// Check Connected
+    /// 持續檢查連線狀態，並於斷線時嘗試重新連線
     /// </summary>
     IEnumerator CheckConnected()
     {
         while(true)
         {
             IsConnected = _pluginInstance.Get<bool>("mConnected");
-            yield return new WaitForSecondsRealtime(0.48763f);
+            if(!IsConnected)
+            {
+                _pluginInstance.Call("Init");
+                LabTools.Log("[Ganglion] Connecting... ");
+            }
+            yield return new WaitForSecondsRealtime(0.8763f);
         }
     } 
 
