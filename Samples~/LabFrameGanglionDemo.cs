@@ -9,10 +9,12 @@ namespace LabFrame.Ganglion
     {
         [SerializeField] Text _text;
 
+
         // Start is called before the first frame update
         void Start()
         {            
-            // GanglionManager.Instance
+            // Init Lab Frame, set userid as "Ganglion_Demo"
+            LabDataManager.Instance.LabDataInit("Ganglion_Demo");
         }
 
         // Update is called once per frame
@@ -42,12 +44,26 @@ namespace LabFrame.Ganglion
         }
 
         public void StartWriteLabData()
-        {
-            GanglionManager.Instance.StartWriteLabData();
+        {            
+            if(GanglionManager.Instance.IsConnected)
+            {
+                // Start recording data
+                GanglionManager.Instance.StreamData();
+                GanglionManager.Instance.StreamImpedance();
+            }
         }
         public void StopWriteLabData()
         {
-            GanglionManager.Instance.StopWriteLabData();
+            // Stop recording data
+            GanglionManager.Instance.StopStreamData();
+            GanglionManager.Instance.StopStreamImpedance();
+
+            // LabFrame reinit (如果遊戲不用重開就不用叫這行)
+            LabApplication.Instance.AppRestartAsync();
+        }
+        public void ExitApp()
+        {
+            Application.Quit();
         }
     }
 }
