@@ -7,6 +7,9 @@ using Newtonsoft.Json;
 
 public class GanglionManager : LabSingleton<GanglionManager>, IManager
 {
+    /// <summary>
+    /// 目前是否有與 Ganglion 設備連線
+    /// </summary>
     public bool IsConnected {get; private set;} = false; 
 
     protected Ganglion_EEGData _lastEegData;

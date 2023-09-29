@@ -9,7 +9,8 @@
     "changelogUrl": "https://github.com/ncu-wmlab/LabFrame_Ganglion",
     "licensesUrl": "https://youtu.be/dQw4w9WgXcQ",
     "dependencies":{
-      "com.xrlab.labframe": "^0.0.3"
+      "com.xrlab.labframe": "0.0.3",
+      "com.unity.nuget.newtonsoft-json": "3.0.2"
     },
     "author": {
       "name": "NCU wmlab & xrlab",
