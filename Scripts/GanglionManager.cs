@@ -27,10 +27,15 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     public void ManagerInit()
     {
 #if UNITY_ANDROID
+        var config = LabTools.GetConfig<GanglionConfig>();
+
         _pluginInstance = new AndroidJavaObject("com.xrlab.ganglion_plugin.PluginInstance");
         if (_pluginInstance == null)
             LabTools.LogError("Error while creating Ganglion PluginInstance object");
         _pluginInstance.CallStatic("receiveUnityActivity", AndroidHelper.CurrentActivity);
+
+        if(!string.IsNullOrEmpty(config.PreferredDeviceName))
+            _pluginInstance.Call("SetPreferredGanglionName", config.PreferredDeviceName);
 
         _checkConnectedCoroutine = StartCoroutine(CheckConnected());
 #endif
