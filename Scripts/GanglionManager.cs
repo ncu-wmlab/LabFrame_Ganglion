@@ -29,14 +29,20 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
 #if UNITY_ANDROID
         var config = LabTools.GetConfig<GanglionConfig>();
 
+        // Plugin
         _pluginInstance = new AndroidJavaObject("com.xrlab.ganglion_plugin.PluginInstance");
         if (_pluginInstance == null)
             LabTools.LogError("Error while creating Ganglion PluginInstance object");
         _pluginInstance.CallStatic("receiveUnityActivity", AndroidHelper.CurrentActivity);
 
+        // Preferred Ganglion Name
         if(!string.IsNullOrEmpty(config.PreferredDeviceName))
             _pluginInstance.Call("SetPreferredGanglionName", config.PreferredDeviceName);
+        
+        // Do connect!
+        _pluginInstance.Call("Init");
 
+        // Check Connected Coroutine
         _checkConnectedCoroutine = StartCoroutine(CheckConnected());
 #endif
     }
@@ -78,10 +84,9 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
             IsConnected = _pluginInstance.Get<bool>("mConnected");
             if(!IsConnected)
             {
-                _pluginInstance.Call("Init");
-                LabTools.Log("[Ganglion] Connecting... ");
+                LabTools.Log("[Ganglion] Disconnected! ");                
             }
-            yield return new WaitForSecondsRealtime(0.8763f);
+            yield return new WaitForSecondsRealtime(0.48763f);
         }
     } 
 #endif
@@ -112,11 +117,11 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     {
         var values = JsonConvert.DeserializeObject<Dictionary<int, int>>(json);
         _lastImpedanceData = new Ganglion_ImpedanceData{ ImpedanceValues = new List<int>(5) };
-        foreach (KeyValuePair<int, int> kvp in values)
-        {
-            // Debug.Log($"name = impedance {kvp.Key}, val = {kvp.Value}");
-            _lastImpedanceData.ImpedanceValues[kvp.Key] = kvp.Value;
-        }
+        // foreach (KeyValuePair<int, int> kvp in values)
+        // {
+        //     // Debug.Log($"name = impedance {kvp.Key}, val = {kvp.Value}");
+        //     _lastImpedanceData.ImpedanceValues[kvp.Key] = kvp.Value;
+        // }
         if(_doWriteEegData)
             LabDataManager.Instance.WriteData(_lastImpedanceData);   
     }
