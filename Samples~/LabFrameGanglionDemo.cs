@@ -8,6 +8,8 @@ namespace LabFrame.Ganglion
     public class LabFrameGanglionDemo : MonoBehaviour
     {
         [SerializeField] Text _text;
+        [SerializeField] Text _eegText;
+        [SerializeField] Text _impText;
 
 
         // Start is called before the first frame update
@@ -20,47 +22,63 @@ namespace LabFrame.Ganglion
         // Update is called once per frame
         void Update()
         {
-            _text.text = $"<b>Connected: </b>{GanglionManager.Instance.IsConnected}\n";
+            _text.text = $"<b>Connected: </b>{GanglionManager.Instance.IsConnected}\n" + 
+                         $"- <b>Using EEG: </b>{GanglionManager.Instance.IsUsingEEG}\n" + 
+                         $"- <b>Using Impedance: </b>{GanglionManager.Instance.IsUsingImpedance}\n\n";
             
             var eeg = GanglionManager.Instance.GetEegData();
             var impedance = GanglionManager.Instance.GetImpedanceData();
+
+            _eegText.text = "<b>EEG:</b> \n";
             if(eeg != null)
             {
-                _text.text += "<b>EEG:</b> \n";
                 foreach (var value in eeg.EEGValues)
                 {
-                    _text.text += value.ToString("0.00") + "\n";
+                    _eegText.text += value.ToString("0.00") + "\n";
                 }
             }
-            _text.text += "\n";
-            if(impedance != null)
+            _impText.text = "<b>Impedance:</b> \n";            
+            foreach (var value in impedance.ImpedanceValues)
             {
-                _text.text += "<b>Impedance:</b> \n";
-                foreach (var value in impedance.ImpedanceValues)
-                {
-                    _text.text += value.ToString("00") + "\n";
-                }
+                _impText.text += value.ToString("00") + "\n";
             }
+            
         }
 
         public void StartWriteLabData()
         {            
-            if(GanglionManager.Instance.IsConnected)
+            if(GanglionManager.Instance.IsConnected && !GanglionManager.Instance.IsUsingEEG)
             {
                 // Start recording data
-                GanglionManager.Instance.StreamData();
-                GanglionManager.Instance.StreamImpedance();
+                GanglionManager.Instance.StreamData();                
             }
         }
         public void StopWriteLabData()
         {
-            // Stop recording data
-            GanglionManager.Instance.StopStreamData();
-            GanglionManager.Instance.StopStreamImpedance();
-
-            // LabFrame reinit (如果遊戲不用重開就不用叫這行)
-            LabApplication.Instance.AppRestartAsync();
+            if(GanglionManager.Instance.IsConnected && GanglionManager.Instance.IsUsingEEG)
+            {
+                // Stop recording data
+                GanglionManager.Instance.StopStreamData();
+            }
         }
+
+        public void StartWriteImpedance()
+        {
+            if(GanglionManager.Instance.IsConnected && !GanglionManager.Instance.IsUsingImpedance)
+            {
+                // Start recording impedance
+                GanglionManager.Instance.StreamImpedance();
+            }
+        }
+        public void StopWriteImpedance()
+        {
+            if(GanglionManager.Instance.IsConnected && GanglionManager.Instance.IsUsingImpedance)
+            {
+                // Stop recording impedance
+                GanglionManager.Instance.StopStreamImpedance();
+            }
+        }
+
         public void ExitApp()
         {
             Application.Quit();

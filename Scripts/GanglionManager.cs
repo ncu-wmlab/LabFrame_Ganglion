@@ -11,9 +11,11 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     /// 目前是否有與 Ganglion 設備連線
     /// </summary>
     public bool IsConnected {get; private set;} = false; 
+    public bool IsUsingEEG {get; private set;} = false;
+    public bool IsUsingImpedance {get; private set;} = false;
 
     protected Ganglion_EEGData _lastEegData;
-    protected Ganglion_ImpedanceData _lastImpedanceData;
+    protected Ganglion_ImpedanceData _currentImpedanceData;
 
     protected bool _doWriteEegData = false;
     protected bool _doWriteImpedanceData = false;
@@ -27,7 +29,9 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     public void ManagerInit()
     {
 #if UNITY_ANDROID
+        // Init
         var config = LabTools.GetConfig<GanglionConfig>();
+        _currentImpedanceData = new Ganglion_ImpedanceData(5);
 
         // Plugin
         _pluginInstance = new AndroidJavaObject("com.xrlab.ganglion_plugin.PluginInstance");
@@ -50,6 +54,7 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     public IEnumerator ManagerDispose()
     {
         StopStreamData();
+        StopStreamImpedance();
 #if UNITY_ANDROID
         StopCoroutine(_checkConnectedCoroutine);
         
@@ -82,6 +87,8 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
         while(true)
         {
             IsConnected = _pluginInstance.Get<bool>("mConnected");
+            IsUsingEEG = _pluginInstance.Get<bool>("mUseEeg");
+            IsUsingImpedance = _pluginInstance.Get<bool>("mUseImpedance");
             if(!IsConnected)
             {
                 LabTools.Log("[Ganglion] Disconnected! ");                
@@ -116,14 +123,13 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     public void ReceiveImpedance(string json) // called by Android plugin
     {
         var values = JsonConvert.DeserializeObject<Dictionary<int, int>>(json);
-        _lastImpedanceData = new Ganglion_ImpedanceData{ ImpedanceValues = new List<int>(5) };
-        // foreach (KeyValuePair<int, int> kvp in values)
-        // {
-        //     // Debug.Log($"name = impedance {kvp.Key}, val = {kvp.Value}");
-        //     _lastImpedanceData.ImpedanceValues[kvp.Key] = kvp.Value;
-        // }
+        foreach (KeyValuePair<int, int> kvp in values)
+        {
+            // Debug.Log($"Impedance {kvp.Key}, val = {kvp.Value}");
+            _currentImpedanceData.ImpedanceValues[kvp.Key] = kvp.Value;
+        }
         if(_doWriteEegData)
-            LabDataManager.Instance.WriteData(_lastImpedanceData);   
+            LabDataManager.Instance.WriteData(_currentImpedanceData);   
     }
     #endregion
 
@@ -179,11 +185,11 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
         return _lastEegData;
     }
     /// <summary>
-    /// 獲取最近一次的阻抗資料，可能為 null
+    /// 獲取目前的阻抗資料
     /// </summary>
     public Ganglion_ImpedanceData GetImpedanceData()
     {
-        return _lastImpedanceData;
+        return _currentImpedanceData;
     }    
     #endregion
 

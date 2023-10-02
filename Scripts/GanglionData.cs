@@ -28,4 +28,13 @@ public class Ganglion_EEGData : LabDataBase
 public class Ganglion_ImpedanceData : LabDataBase
 {
     public List<int> ImpedanceValues;
+
+    public Ganglion_ImpedanceData(int channels)
+    {
+        ImpedanceValues = new List<int>(channels);
+        for (int i = 0; i < channels; i++)
+        {
+            ImpedanceValues.Add(0);
+        }
+    }
 }
