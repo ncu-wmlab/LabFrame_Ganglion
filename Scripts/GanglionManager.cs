@@ -60,8 +60,11 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
         
         try
         {
-            _pluginInstance.Call("Disconnect");
-            // _pluginInstance.Call("Close");
+            if(IsConnected)
+            {
+                _pluginInstance.Call("Disconnect");
+                // _pluginInstance.Call("Close");
+            }
             LabTools.Log("[Ganglion] Disconnected");
         }
         catch
@@ -89,10 +92,10 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
             IsConnected = _pluginInstance.Get<bool>("mConnected");
             IsUsingEEG = _pluginInstance.Get<bool>("mUseEeg");
             IsUsingImpedance = _pluginInstance.Get<bool>("mUseImpedance");
-            if(!IsConnected)
-            {
-                LabTools.Log("[Ganglion] Disconnected! ");                
-            }
+            // if(!IsConnected)
+            // {
+            //     LabTools.Log("[Ganglion] Not connected! ");                
+            // }
             yield return new WaitForSecondsRealtime(0.48763f);
         }
     } 
@@ -140,6 +143,11 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     /// <param name="autoWriteLabData">自動把收到的數據送到 LabDataManager 儲存</param>
     public void StreamData(bool autoWriteLabData = true)
     {
+        if(!IsConnected)
+        {
+            Debug.LogWarning("[Ganglion] Not connected!");
+            return;
+        }
         _doWriteEegData = autoWriteLabData;
 #if UNITY_ANDROID
         _pluginInstance.Call("StreamData");
@@ -152,7 +160,8 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     {
         _doWriteEegData = false;
 #if UNITY_ANDROID
-        _pluginInstance.Call("StopStreamData");
+        if(IsUsingEEG)
+            _pluginInstance.Call("StopStreamData");
 #endif
     }
     /// <summary>
@@ -161,6 +170,11 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     /// <param name="autoWriteLabData">自動把收到的數據送到 LabDataManager 儲存</param>
     public void StreamImpedance(bool autoWriteLabData = true)
     {
+        if(!IsConnected)
+        {
+            Debug.LogWarning("[Ganglion] Not connected!");
+            return;
+        }
         _doWriteImpedanceData = autoWriteLabData;
 #if UNITY_ANDROID
         _pluginInstance.Call("StreamImpedance");
@@ -170,10 +184,11 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     /// 停止記錄阻抗
     /// </summary>
     public void StopStreamImpedance()
-    {
+    {        
         _doWriteImpedanceData = false;
 #if UNITY_ANDROID
-        _pluginInstance.Call("StopStreamImpedance");
+        if(IsUsingImpedance)
+            _pluginInstance.Call("StopStreamImpedance");
 #endif
     }
 
