@@ -1,7 +1,11 @@
 # Lab Frame 2023 - Ganglion Plugin
-###### com.xrlab/labframe_ganglion
+> com.xrlab/labframe_ganglion
 
 ## CHANGELOG
+#### 1.0.7
+- Add option `AutoConnectOnInit`
+- Support manual connect / disconnect
+
 #### 1.0.6
 - Fixed permission check on Android >=12
 

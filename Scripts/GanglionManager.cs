@@ -17,6 +17,7 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     protected Ganglion_EEGData _lastEegData;
     protected Ganglion_ImpedanceData _currentImpedanceData;
 
+    protected bool _autoReconnect = false;
     protected bool _doWriteEegData = false;
     protected bool _doWriteImpedanceData = false;
     
@@ -44,7 +45,8 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
             _pluginInstance.Call("SetPreferredGanglionName", config.PreferredDeviceName);
         
         // Do connect!
-        _pluginInstance.Call("Init");
+        if(config.AutoConnectOnInit)
+            Connect();
 
         // Check Connected Coroutine
         _checkConnectedCoroutine = StartCoroutine(CheckConnected());
@@ -60,12 +62,7 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
         
         try
         {
-            if(IsConnected)
-            {
-                _pluginInstance.Call("Disconnect");
-                // _pluginInstance.Call("Close");
-            }
-            LabTools.Log("[Ganglion] Disconnected");
+            Disconnect();
         }
         catch
         {
@@ -81,7 +78,17 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     #endregion
 
 
+    void Connect()
+    {
+        if(!IsConnected)
+        {
 #if UNITY_ANDROID
+            _pluginInstance.Call("Init");
+#endif
+        }
+        LabTools.Log("[Ganglion] Start Connect...");
+    }
+
     /// <summary>
     /// 持續檢查連線狀態，並於斷線時嘗試重新連線
     /// </summary>
@@ -89,6 +96,7 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     {
         while(true)
         {
+#if UNITY_ANDROID
             IsConnected = _pluginInstance.Get<bool>("mConnected");
             IsUsingEEG = _pluginInstance.Get<bool>("mUseEeg");
             IsUsingImpedance = _pluginInstance.Get<bool>("mUseImpedance");
@@ -96,10 +104,21 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
             // {
             //     LabTools.Log("[Ganglion] Not connected! ");                
             // }
+#endif
             yield return new WaitForSecondsRealtime(0.48763f);
         }
     } 
+
+    void Disconnect()
+    {
+        if(IsConnected)
+        {
+#if UNITY_ANDROID
+            _pluginInstance.Call("Disconnect");
 #endif
+        }
+        LabTools.Log("[Ganglion] Disconnected");
+    }
 
     #region Android Plugin Callback            
     /// <summary>
@@ -206,6 +225,24 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     {
         return _currentImpedanceData;
     }    
+
+    /// <summary>
+    /// 手動開始連線
+    /// (目前無法在斷線後再次連線，敬請注意)
+    /// </summary>
+    public void ManualConnect()
+    {
+        Connect();
+    }
+
+    /// <summary>
+    /// 手動進行斷線
+    /// (目前無法在斷線後再次連線，敬請注意)
+    /// </summary>
+    public void ManualDisconnect()
+    {
+        Disconnect();
+    }
     #endregion
 
 }

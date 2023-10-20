@@ -9,4 +9,9 @@ public class GanglionConfig
     /// 若為空字串則自動連線第一個找到的 Ganglion 設備
     /// </summary>
     public string PreferredDeviceName = "";
+
+    /// <summary>
+    /// 啟動時自動開啟連線
+    /// </summary>
+    public bool AutoConnectOnInit = true;
 }
