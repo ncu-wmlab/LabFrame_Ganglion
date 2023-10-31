@@ -2,6 +2,9 @@
 > com.xrlab/labframe_ganglion
 
 ## CHANGELOG
+#### 1.0.8
+- Fix IMananger Init issue in editor
+
 #### 1.0.7
 - Add option `AutoConnectOnInit`
 - Support manual connect / disconnect
