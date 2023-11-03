@@ -13,5 +13,5 @@ public class GanglionConfig
     /// <summary>
     /// 啟動時自動開啟連線
     /// </summary>
-    public bool AutoConnectOnInit = true;
+    public bool AutoConnectOnInit = false;
 }

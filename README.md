@@ -2,6 +2,7 @@
 > com.xrlab/labframe_ganglion
 
 ## CHANGELOG
+#### 1.0.9
 #### 1.0.8
 - Fix IMananger Init issue in editor
 
