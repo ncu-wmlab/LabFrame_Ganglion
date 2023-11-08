@@ -40,7 +40,7 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
         _pluginInstance = new AndroidJavaObject("com.xrlab.ganglion_plugin.PluginInstance");
         if (_pluginInstance == null)
             LabTools.LogError("Error while creating Ganglion PluginInstance object");
-        _pluginInstance.CallStatic("receiveUnityActivity", AndroidHelper.CurrentActivity);
+        // _pluginInstance.CallStatic("receiveUnityActivity", AndroidHelper.CurrentActivity);  // 現在可以不用叫這行
 
         // Preferred Ganglion Name
         if(!string.IsNullOrEmpty(config.PreferredDeviceName))
