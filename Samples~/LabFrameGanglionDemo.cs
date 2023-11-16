@@ -79,6 +79,16 @@ namespace LabFrame.Ganglion
             }
         }
 
+        public void Connect()
+        {
+            GanglionManager.Instance.ManualConnect();
+        }
+
+        public void Disconnect()
+        {
+            GanglionManager.Instance.ManualDisconnect();
+        }
+
         public void ExitApp()
         {
             Application.Quit();

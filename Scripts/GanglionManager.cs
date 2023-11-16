@@ -29,29 +29,28 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     #region IManager
     public void ManagerInit()
     {
+#if UNITY_ANDROID
         // Init
         var config = LabTools.GetConfig<GanglionConfig>();
         _currentImpedanceData = new Ganglion_ImpedanceData(5);
 
-#if UNITY_EDITOR
-        Debug.LogWarning("[Ganglion] Android plugin is not available in Editor.");
-#elif UNITY_ANDROID
         // Plugin
         _pluginInstance = new AndroidJavaObject("com.xrlab.ganglion_plugin.PluginInstance");
         if (_pluginInstance == null)
             LabTools.LogError("Error while creating Ganglion PluginInstance object");
-        // _pluginInstance.CallStatic("receiveUnityActivity", AndroidHelper.CurrentActivity);  // 現在可以不用叫這行
+        _pluginInstance.CallStatic("receiveUnityActivity", AndroidHelper.CurrentActivity);
 
         // Preferred Ganglion Name
         if(!string.IsNullOrEmpty(config.PreferredDeviceName))
-            _pluginInstance.Call("SetPreferredGanglionName", config.PreferredDeviceName);        
-#endif
+            _pluginInstance.Call("SetPreferredGanglionName", config.PreferredDeviceName);
+        
         // Do connect!
         if(config.AutoConnectOnInit)
             Connect();
 
         // Check Connected Coroutine
         _checkConnectedCoroutine = StartCoroutine(CheckConnected());
+#endif
     }
 
     public IEnumerator ManagerDispose()
@@ -83,9 +82,7 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     {
         if(!IsConnected)
         {
-#if UNITY_EDITOR
-            Debug.LogWarning("[Ganglion] Android plugin is not available in Editor.");
-#elif UNITY_ANDROID
+#if UNITY_ANDROID
             _pluginInstance.Call("Init");
 #endif
         }
@@ -97,20 +94,21 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     /// </summary>
     IEnumerator CheckConnected()
     {
+        bool lastIsConnected = false;
         while(true)
         {
-#if UNITY_EDITOR
-            
-#elif UNITY_ANDROID
+#if UNITY_ANDROID
             IsConnected = _pluginInstance.Get<bool>("mConnected");
             IsUsingEEG = _pluginInstance.Get<bool>("mUseEeg");
             IsUsingImpedance = _pluginInstance.Get<bool>("mUseImpedance");
-            // if(!IsConnected)
-            // {
-            //     LabTools.Log("[Ganglion] Not connected! ");                
-            // }
+
+            if(!IsConnected && lastIsConnected)
+            {
+                LabPromptBox.Show("腦電已斷線！\nGanglion connection lost!");                
+            }
+            lastIsConnected = IsConnected;
 #endif
-            yield return new WaitForSecondsRealtime(0.48763f);
+            yield return null;
         }
     } 
 
