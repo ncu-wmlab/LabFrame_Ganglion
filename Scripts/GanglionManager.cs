@@ -23,8 +23,9 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     
 #if UNITY_ANDROID
     private AndroidJavaObject _pluginInstance;
-    Coroutine _checkConnectedCoroutine;
 #endif
+    Coroutine _checkConnectedCoroutine;
+
 
     #region IManager
     public void ManagerInit()
@@ -49,8 +50,8 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
             Connect();
 
         // Check Connected Coroutine
-        _checkConnectedCoroutine = StartCoroutine(CheckConnected());
 #endif
+        _checkConnectedCoroutine = StartCoroutine(CheckConnected());
     }
 
     public IEnumerator ManagerDispose()
@@ -100,14 +101,14 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
 #if UNITY_ANDROID
             IsConnected = _pluginInstance.Get<bool>("mConnected");
             IsUsingEEG = _pluginInstance.Get<bool>("mUseEeg");
-            IsUsingImpedance = _pluginInstance.Get<bool>("mUseImpedance");
-
+            IsUsingImpedance = _pluginInstance.Get<bool>("mUseImpedance");            
+#endif
             if(!IsConnected && lastIsConnected)
             {
                 LabPromptBox.Show("腦電已斷線！\nGanglion connection lost!");                
             }
             lastIsConnected = IsConnected;
-#endif
+            
             yield return null;
         }
     } 

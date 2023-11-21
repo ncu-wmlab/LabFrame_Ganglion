@@ -5,6 +5,7 @@
 
 #### 1.0.10
 - Add disconnect notifcation
+- minor bug fix
 
 #### 1.0.9
 
