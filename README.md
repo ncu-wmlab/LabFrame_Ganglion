@@ -2,6 +2,9 @@
 > com.xrlab/labframe_ganglion
 
 ## CHANGELOG
+#### 1.0.11
+- Remove dependency of gson
+- Add an option to control whether to show Ganglion disconnection notification
 
 #### 1.0.10
 - Add disconnect notifcation

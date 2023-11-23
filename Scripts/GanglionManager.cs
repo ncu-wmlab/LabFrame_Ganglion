@@ -17,7 +17,8 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     protected Ganglion_EEGData _lastEegData;
     protected Ganglion_ImpedanceData _currentImpedanceData;
 
-    protected bool _autoReconnect = false;
+    GanglionConfig _config;
+
     protected bool _doWriteEegData = false;
     protected bool _doWriteImpedanceData = false;
     
@@ -32,7 +33,7 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     {
 #if UNITY_ANDROID
         // Init
-        var config = LabTools.GetConfig<GanglionConfig>();
+        _config = LabTools.GetConfig<GanglionConfig>();
         _currentImpedanceData = new Ganglion_ImpedanceData(5);
 
         // Plugin
@@ -42,11 +43,11 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
         _pluginInstance.CallStatic("receiveUnityActivity", AndroidHelper.CurrentActivity);
 
         // Preferred Ganglion Name
-        if(!string.IsNullOrEmpty(config.PreferredDeviceName))
-            _pluginInstance.Call("SetPreferredGanglionName", config.PreferredDeviceName);
+        if(!string.IsNullOrEmpty(_config.PreferredDeviceName))
+            _pluginInstance.Call("SetPreferredGanglionName", _config.PreferredDeviceName);
         
         // Do connect!
-        if(config.AutoConnectOnInit)
+        if(_config.AutoConnectOnInit)
             Connect();
 
         // Check Connected Coroutine
@@ -58,9 +59,10 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     {
         StopStreamData();
         StopStreamImpedance();
-#if UNITY_ANDROID
+
         StopCoroutine(_checkConnectedCoroutine);
-        
+        _checkConnectedCoroutine = null;
+
         try
         {
             Disconnect();
@@ -70,9 +72,12 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
             LabTools.LogError("[Ganglion] Disconnect failed");
         }
 
+#if UNITY_ANDROID                
         _pluginInstance.Dispose();
         _pluginInstance = null;
-#endif
+#endif        
+
+        _config = null;
         yield return 0;
     }
     

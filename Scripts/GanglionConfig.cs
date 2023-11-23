@@ -14,4 +14,9 @@ public class GanglionConfig
     /// 啟動時自動開啟連線
     /// </summary>
     public bool AutoConnectOnInit = false;
+
+    /// <summary>
+    /// 是否顯示斷線通知
+    /// </summary>
+    public bool DisconnectNotification = true;
 }
