@@ -131,13 +131,8 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     /// <param name="json"></param>
     public void ReceiveData(string json) // called by Android plugin
     {
-        // Convert to Dictionary
-        var values = JsonConvert.DeserializeObject<Dictionary<string, double>>(json);
-        _lastEegData = new Ganglion_EEGData(
-            values["ch1_1"], 
-            values["ch2_1"], 
-            values["ch3_1"], 
-            values["ch4_1"]);
+        string[] values = json.Split('|');
+        _lastEegData = new Ganglion_EEGData(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]);
         if(_doWriteEegData)
             LabDataManager.Instance.WriteData(_lastEegData);        
     }
@@ -148,12 +143,9 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     /// <param name="json"></param> 
     public void ReceiveImpedance(string json) // called by Android plugin
     {
-        var values = JsonConvert.DeserializeObject<Dictionary<int, int>>(json);
-        foreach (KeyValuePair<int, int> kvp in values)
-        {
-            // Debug.Log($"Impedance {kvp.Key}, val = {kvp.Value}");
-            _currentImpedanceData.ImpedanceValues[kvp.Key] = kvp.Value;
-        }
+        // "ch|imp_value"
+        string[] values = json.Split('|');
+        _currentImpedanceData.ImpedanceValues[int.Parse(values[0])] = int.Parse(values[1]);
         if(_doWriteEegData)
             LabDataManager.Instance.WriteData(_currentImpedanceData);   
     }
