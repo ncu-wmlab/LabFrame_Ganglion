@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using LabFrame2023;
 using System.Threading;
 using Newtonsoft.Json;
+using UnityEngine.Events;
 
 public class GanglionManager : LabSingleton<GanglionManager>, IManager
 {
@@ -11,8 +12,23 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
     /// 目前是否有與 Ganglion 設備連線
     /// </summary>
     public bool IsConnected {get; private set;} = false; 
+    /// <summary>
+    /// 正在紀錄 EEG？
+    /// </summary>
     public bool IsUsingEEG {get; private set;} = false;
+    /// <summary>
+    /// 正在紀錄阻抗？
+    /// </summary>
     public bool IsUsingImpedance {get; private set;} = false;
+
+    /// <summary>
+    /// EEG 數值更新事件
+    /// </summary>
+    public event UnityAction<Ganglion_EEGData> OnEEGUpdated;
+    /// <summary>
+    /// 阻抗數值更新事件
+    /// </summary>
+    public event UnityAction<Ganglion_ImpedanceData> OnImpedanceUpdated;
 
     protected Ganglion_EEGData _lastEegData;
     protected Ganglion_ImpedanceData _currentImpedanceData;
@@ -139,7 +155,8 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
         string[] values = json.Split('|');
         _lastEegData = new Ganglion_EEGData(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]);
         if(_doWriteEegData)
-            LabDataManager.Instance.WriteData(_lastEegData);        
+            LabDataManager.Instance.WriteData(_lastEegData);    
+        OnEEGUpdated?.Invoke(_lastEegData);    
     }
 
     /// <summary>
@@ -153,6 +170,7 @@ public class GanglionManager : LabSingleton<GanglionManager>, IManager
         _currentImpedanceData.ImpedanceValues[int.Parse(values[0])] = int.Parse(values[1]);
         if(_doWriteEegData)
             LabDataManager.Instance.WriteData(_currentImpedanceData);   
+        OnImpedanceUpdated?.Invoke(_currentImpedanceData);
     }
     #endregion
 

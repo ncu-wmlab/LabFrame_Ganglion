@@ -1,6 +1,6 @@
 {
     "name": "com.xrlab.labframe_ganglion",
-    "version": "1.0.11",
+    "version": "1.0.12",
     "displayName": "Lab Frame 2023 - Ganglion Plugin",
     "description": "Ganglion Support for LabFrame2023.\nNote: Currently only supports Android!!",
     "unity": "2020.3",
@@ -9,7 +9,7 @@
     "changelogUrl": "https://github.com/ncu-wmlab/LabFrame_Ganglion",
     "licensesUrl": "https://youtu.be/dQw4w9WgXcQ",
     "dependencies":{
-      "com.xrlab.labframe": "0.0.13"
+      "com.xrlab.labframe": "0.0.16"
     },
     "author": {
       "name": "NCU wmlab & xrlab",

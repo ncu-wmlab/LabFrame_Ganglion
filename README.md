@@ -2,6 +2,10 @@
 > com.xrlab/labframe_ganglion
 
 ## CHANGELOG
+#### 1.0.12
+- Added data update events
+- Data ToString() func
+
 #### 1.0.11
 - Remove dependency of gson
 - Add an option to control whether to show Ganglion disconnection notification

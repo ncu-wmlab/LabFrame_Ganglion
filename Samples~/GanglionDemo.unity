@@ -232,8 +232,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 101.778564, y: -354.04}
-  m_SizeDelta: {x: 203.5571, y: 269.92}
+  m_AnchoredPosition: {x: 131.49425, y: -354.04}
+  m_SizeDelta: {x: 262.9884, y: 269.92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &149739200
 MonoBehaviour:
@@ -265,7 +265,7 @@ MonoBehaviour:
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'EEG
@@ -1125,8 +1125,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 314, y: -354.04}
-  m_SizeDelta: {x: 203.5571, y: 269.92}
+  m_AnchoredPosition: {x: 354.44626, y: -354.04}
+  m_SizeDelta: {x: 122.6645, y: 269.92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &587695555
 MonoBehaviour:
@@ -1158,7 +1158,7 @@ MonoBehaviour:
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: 'Impedance

@@ -16,7 +16,7 @@ namespace LabFrame.Ganglion
         void Start()
         {            
             // Init Lab Frame, set userid as "Ganglion_Demo"
-            LabDataManager.Instance.LabDataInit("Ganglion_Demo");
+            LabDataManager.Instance.LabDataInit("GanglionDemo");
         }
 
         // Update is called once per frame
@@ -32,10 +32,12 @@ namespace LabFrame.Ganglion
             _eegText.text = "<b>EEG:</b> \n";
             if(eeg != null)
             {
-                foreach (var value in eeg.EEGValues)
-                {
-                    _eegText.text += value.ToString("0.00") + "\n";
-                }
+                // foreach (var value in eeg.EEGValues)
+                // {
+                //     _eegText.text += value.ToString("0.00") + "\n";
+                // }
+                _eegText.text = $"ch1_1 {eeg.ch1_1:0.00} ch1_2 {eeg.ch1_2:0.00}\nch2_1 {eeg.ch2_1:0.00} ch2_2 {eeg.ch2_2:0.00}\n"
+                              + $"ch3_1 {eeg.ch3_1:0.00} ch3_2 {eeg.ch3_2:0.00}\nch4_1 {eeg.ch4_1:0.00} ch4_2 {eeg.ch4_2:0.00}";
             }
             _impText.text = "<b>Impedance:</b> \n";            
             foreach (var value in impedance.ImpedanceValues)
