@@ -23,6 +23,8 @@ public class Ganglion_EEGData : LabDataBase
     public List<double> EEGValues => new List<double>(){ch1_1, ch2_1, ch3_1, ch4_1};
     public List<double> EEGValuesFull => new List<double>(){ch1_1, ch1_2, ch2_1, ch2_2, ch3_1, ch3_2, ch4_1, ch4_2};
         
+    public Ganglion_EEGData(){}
+
     public Ganglion_EEGData(params string[] ch) : base()
     {
         ch1_1 = double.Parse(ch[0]);
@@ -47,6 +49,8 @@ public class Ganglion_EEGData : LabDataBase
 public class Ganglion_ImpedanceData : LabDataBase
 {
     public List<int> ImpedanceValues;
+
+    public Ganglion_ImpedanceData(){}
 
     public Ganglion_ImpedanceData(int channels)
     {
